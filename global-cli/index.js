@@ -55,11 +55,11 @@ var argv = require('minimist')(process.argv.slice(2));
 var commands = argv._;
 if (commands.length === 0) {
   if (argv.version) {
-    console.log('create-react-app version: ' + require('./package.json').version);
+    console.log('create-feeble-app version: ' + require('./package.json').version);
     process.exit();
   }
   console.error(
-    'Usage: create-react-app <project-directory> [--verbose]'
+    'Usage: create-feeble-app <project-directory> [--verbose]'
   );
   process.exit(1);
 }
@@ -92,7 +92,7 @@ function createApp(name, verbose, version) {
   process.chdir(root);
 
   console.log('Installing packages. This might take a couple minutes.');
-  console.log('Installing react-scripts from npm...');
+  console.log('Installing feeble-scripts from npm...');
   console.log();
 
   run(root, appName, version, verbose, originalDirectory);
@@ -118,7 +118,7 @@ function run(root, appName, version, verbose, originalDirectory) {
     var scriptsPath = path.resolve(
       process.cwd(),
       'node_modules',
-      'react-scripts',
+      'feeble-scripts',
       'scripts',
       'init.js'
     );
@@ -128,7 +128,7 @@ function run(root, appName, version, verbose, originalDirectory) {
 }
 
 function getInstallPackage(version) {
-  var packageToInstall = 'react-scripts';
+  var packageToInstall = 'feeble-scripts';
   var validSemver = semver.valid(version);
   if (validSemver) {
     packageToInstall += '@' + validSemver;
@@ -143,7 +143,7 @@ function checkNodeVersion() {
   var packageJsonPath = path.resolve(
     process.cwd(),
     'node_modules',
-    'react-scripts',
+    'feeble-scripts',
     'package.json'
   );
   var packageJson = require(packageJsonPath);
@@ -154,7 +154,7 @@ function checkNodeVersion() {
   if (!semver.satisfies(process.version, packageJson.engines.node)) {
     console.error(
       chalk.red(
-        'You are currently running Node %s but create-react-app requires %s.' +
+        'You are currently running Node %s but create-feeble-app requires %s.' +
         ' Please use a supported version of Node.\n'
       ),
       process.version,

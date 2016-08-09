@@ -1,19 +1,19 @@
 {
-  "name": "react-scripts",
+  "name": "feeble-scripts",
   "version": "0.2.3",
-  "description": "Configuration and scripts for Create React App.",
-  "repository": "facebookincubator/create-react-app",
+  "description": "Configuration and scripts for Create Feeble App.",
+  "repository": "feeblejs/create-feeble-app",
   "license": "BSD-3-Clause",
   "engines": {
     "node": ">=4"
   },
   "bugs": {
-    "url": "https://github.com/facebookincubator/create-react-app/issues"
+    "url": "https://github.com/feeblejs/create-feeble-app/issues"
   },
   "scripts": {
     "start": "node scripts/start.js --debug-template",
     "build": "node scripts/build.js --debug-template",
-    "create-react-app": "node global-cli/index.js --scripts-version \"$PWD/`npm pack`\"",
+    "create-feeble-app": "node global-cli/index.js --scripts-version \"$PWD/`npm pack`\"",
     "test": "tasks/e2e.sh"
   },
   "files": [
@@ -24,7 +24,7 @@
     "template"
   ],
   "bin": {
-    "react-scripts": "./bin/react-scripts.js"
+    "feeble-scripts": "./bin/feeble-scripts.js"
   },
   "dependencies": {
     "autoprefixer": "6.4.0",
@@ -73,9 +73,12 @@
     "whatwg-fetch": "1.0.0"
   },
   "devDependencies": {
+    "babel-polyfill": "^6.13.0",
     "bundle-deps": "1.0.0",
+    "feeble": "^0.1.2",
     "react": "^15.3.1",
-    "react-dom": "^15.3.1"
+    "react-dom": "^15.3.1",
+    "react-test-renderer": "^15.3.0"
   },
   "optionalDependencies": {
     "fsevents": "1.0.14"

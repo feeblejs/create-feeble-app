@@ -1,20 +1,20 @@
 {
-  "name": "create-react-app",
+  "name": "create-feeble-app",
   "version": "0.2.0",
   "keywords": [
     "react"
   ],
-  "description": "Create React apps with no build configuration.",
-  "repository": "facebookincubator/create-react-app",
+  "description": "Create Feeble apps with no build configuration.",
+  "repository": "feeblejs/create-feeble-app",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/facebookincubator/create-react-app/issues"
+    "url": "https://github.com/feeblejs/create-feeble-app/issues"
   },
   "files": [
     "index.js"
   ],
   "bin": {
-    "create-react-app": "./index.js"
+    "create-feeble-app": "./index.js"
   },
   "dependencies": {
     "chalk": "^1.1.1",

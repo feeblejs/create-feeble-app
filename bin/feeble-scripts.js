@@ -16,6 +16,6 @@ case 'eject':
   break;
 default:
   console.log('Unknown script "' + script + '".');
-  console.log('Perhaps you need to update react-scripts?');
+  console.log('Perhaps you need to update feeble-scripts?');
   break;
 }

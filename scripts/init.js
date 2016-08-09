@@ -12,7 +12,7 @@ var path = require('path');
 var spawn = require('cross-spawn');
 
 module.exports = function(appPath, appName, verbose, originalDirectory) {
-  var ownPath = path.join(appPath, 'node_modules', 'react-scripts');
+  var ownPath = path.join(appPath, 'node_modules', 'feeble-scripts');
 
   var appPackage = require(path.join(appPath, 'package.json'));
 
@@ -22,12 +22,12 @@ module.exports = function(appPath, appName, verbose, originalDirectory) {
   // Setup the script rules
   appPackage.scripts = {};
   ['start', 'build', 'eject'].forEach(function(command) {
-    appPackage.scripts[command] = 'react-scripts ' + command;
+    appPackage.scripts[command] = 'feeble-scripts ' + command;
   });
 
   // explicitly specify ESLint config path for editor plugins
   appPackage.eslintConfig = {
-    extends: './node_modules/react-scripts/config/eslint.js',
+    extends: './node_modules/feeble-scripts/config/eslint.js',
   };
 
   fs.writeFileSync(
@@ -43,13 +43,15 @@ module.exports = function(appPath, appName, verbose, originalDirectory) {
   fs.move(path.join(appPath, 'gitignore'), path.join(appPath, '.gitignore'), []);
 
   // Run another npm install for react and react-dom
-  console.log('Installing react and react-dom from npm...');
+  console.log('Installing dependencies from npm...');
   console.log();
   // TODO: having to do two npm installs is bad, can we avoid it?
   var args = [
     'install',
     'react',
     'react-dom',
+    'feeble',
+    'babel-polyfill',
     '--save',
     verbose && '--verbose'
   ].filter(function(e) { return e; });
