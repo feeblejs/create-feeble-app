@@ -51,6 +51,7 @@ module.exports = function(appPath, appName, verbose, originalDirectory) {
     'react',
     'react-dom',
     'feeble',
+    'feeble-router',
     'babel-polyfill',
     '--save',
     verbose && '--verbose'

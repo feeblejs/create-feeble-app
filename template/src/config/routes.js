@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { Router, Route } from 'feeble/router'
+import { Router, Route } from 'feeble-router'
 import App from '../containers/App'
 
 export default function routes({ history }) {
