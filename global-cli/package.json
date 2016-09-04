@@ -1,6 +1,6 @@
 {
-  "name": "create-feeble-app",
-  "version": "0.2.0",
+  "name": "create-react-app",
+  "version": "0.3.0",
   "keywords": [
     "react"
   ],
@@ -20,6 +20,7 @@
     "chalk": "^1.1.1",
     "cross-spawn": "^4.0.0",
     "minimist": "^1.2.0",
+    "path-exists": "^3.0.0",
     "semver": "^5.0.3"
   }
 }

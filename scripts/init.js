@@ -10,6 +10,8 @@
 var fs = require('fs-extra');
 var path = require('path');
 var spawn = require('cross-spawn');
+var pathExists = require('path-exists');
+var chalk = require('chalk');
 
 module.exports = function(appPath, appName, verbose, originalDirectory) {
   var ownPath = path.join(appPath, 'node_modules', 'feeble-scripts');
@@ -18,12 +20,15 @@ module.exports = function(appPath, appName, verbose, originalDirectory) {
 
   // Copy over some of the devDependencies
   appPackage.dependencies = appPackage.dependencies || {};
+  appPackage.devDependencies = appPackage.devDependencies || {};
 
   // Setup the script rules
-  appPackage.scripts = {};
-  ['start', 'build', 'eject'].forEach(function(command) {
-    appPackage.scripts[command] = 'feeble-scripts ' + command;
-  });
+  appPackage.scripts = {
+    'start': 'feeble-scripts start',
+    'build': 'feeble-scripts build',
+    'test': 'feeble-scripts test --env=jsdom',
+    'eject': 'feeble-scripts eject'
+  };
 
   // explicitly specify ESLint config path for editor plugins
   appPackage.eslintConfig = {
@@ -35,12 +40,28 @@ module.exports = function(appPath, appName, verbose, originalDirectory) {
     JSON.stringify(appPackage, null, 2)
   );
 
+  var readmeExists = pathExists.sync(path.join(appPath, 'README.md'));
+  if (readmeExists) {
+    fs.renameSync(path.join(appPath, 'README.md'), path.join(appPath, 'README.old.md'));
+  }
+
   // Copy the files for the user
   fs.copySync(path.join(ownPath, 'template'), appPath);
 
   // Rename gitignore after the fact to prevent npm from renaming it to .npmignore
   // See: https://github.com/npm/npm/issues/1862
-  fs.move(path.join(appPath, 'gitignore'), path.join(appPath, '.gitignore'), []);
+  fs.move(path.join(appPath, 'gitignore'), path.join(appPath, '.gitignore'), [], function (err) {
+    if (err) {
+      // Append if there's already a `.gitignore` file there
+      if (err.code === 'EEXIST') {
+        var data = fs.readFileSync(path.join(appPath, 'gitignore'));
+        fs.appendFileSync(path.join(appPath, '.gitignore'), data);
+        fs.unlinkSync(path.join(appPath, 'gitignore'));
+      } else {
+        throw err;
+      }
+    }
+  });
 
   // Run another npm install for react and react-dom
   console.log('Installing dependencies from npm...');
@@ -52,7 +73,6 @@ module.exports = function(appPath, appName, verbose, originalDirectory) {
     'react-dom',
     'feeble',
     'feeble-router',
-    'babel-polyfill',
     '--save',
     verbose && '--verbose'
   ].filter(function(e) { return e; });
@@ -79,6 +99,7 @@ module.exports = function(appPath, appName, verbose, originalDirectory) {
     console.log('Inside that directory, you can run several commands:');
     console.log();
     console.log('  * npm start: Starts the development server.');
+    console.log('  * npm test: Starts the test runner.');
     console.log('  * npm run build: Bundles the app into static files for production.');
     console.log('  * npm run eject: Removes this tool. If you do this, you can’t go back!');
     console.log();
@@ -86,6 +107,10 @@ module.exports = function(appPath, appName, verbose, originalDirectory) {
     console.log();
     console.log('  cd', cdpath);
     console.log('  npm start');
+    if (readmeExists) {
+      console.log();
+      console.log(chalk.yellow('You had a `README.md` file, we renamed it to `README.old.md`'));
+    }
     console.log();
     console.log('Happy hacking!');
   });
