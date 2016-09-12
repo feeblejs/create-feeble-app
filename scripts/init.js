@@ -69,6 +69,7 @@ module.exports = function(appPath, appName, verbose, originalDirectory) {
   // TODO: having to do two npm installs is bad, can we avoid it?
   var args = [
     'install',
+    'babel-polyfill',
     'react',
     'react-dom',
     'feeble',
