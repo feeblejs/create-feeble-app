@@ -47,7 +47,7 @@ module.exports = {
   settings: {
     'import/ignore': [
       'node_modules',
-      '\\.(json|css|jpg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm)$',
+      '\\.(json|css|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$',
     ],
     'import/extensions': ['.js'],
     'import/resolver': {
@@ -126,12 +126,16 @@ module.exports = {
     'no-template-curly-in-string': 'warn',
     'no-this-before-super': 'warn',
     'no-throw-literal': 'warn',
-    'no-undef': 'warn',
+    'no-undef': 'error',
     'no-unexpected-multiline': 'warn',
     'no-unreachable': 'warn',
     'no-unused-expressions': 'warn',
     'no-unused-labels': 'warn',
-    'no-unused-vars': ['warn', { vars: 'local', args: 'none' }],
+    'no-unused-vars': ['warn', {
+      vars: 'local',
+      varsIgnorePattern: '^_',
+      args: 'none'
+    }],
     'no-use-before-define': ['warn', 'nofunc'],
     'no-useless-computed-key': 'warn',
     'no-useless-concat': 'warn',

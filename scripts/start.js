@@ -20,6 +20,7 @@ var httpProxyMiddleware = require('http-proxy-middleware');
 var execSync = require('child_process').execSync;
 var opn = require('opn');
 var detect = require('detect-port');
+var checkRequiredFiles = require('./utils/checkRequiredFiles');
 var prompt = require('./utils/prompt');
 var config = require('../config/webpack.config.dev');
 var paths = require('../config/paths');
@@ -68,10 +69,12 @@ function formatMessage(message) {
     .replace('./~/css-loader!./~/postcss-loader!', '');
 }
 
+var isFirstClear = true;
 function clearConsole() {
-  // This seems to work best on Windows and other systems.
-  // The intention is to clear the output so you can focus on most recent build.
-  process.stdout.write('\x1bc');
+  // On first run, clear completely so it doesn't show half screen on Windows.
+  // On next runs, use a different sequence that properly scrolls back.
+  process.stdout.write(isFirstClear ? '\x1bc' : '\x1b[2J\x1b[0f');
+  isFirstClear = false;
 }
 
 function setupCompiler(port, protocol) {
@@ -184,6 +187,15 @@ function onProxyError(proxy) {
       chalk.cyan(err.code) + ').'
     );
     console.log();
+
+    // And immediately send the proper error response to the client.
+    // Otherwise, the request will eventually timeout with ERR_EMPTY_RESPONSE on the client side.
+    if (res.writeHead && !res.headersSent) {
+        res.writeHead(500);
+    }
+    res.end('Proxy error: Could not proxy request ' + req.url + ' from ' +
+      host + ' to ' + proxy + ' (' + err.code + ').'
+    );
   }
 }
 
@@ -192,14 +204,15 @@ function addMiddleware(devServer) {
   // Every unrecognized request will be forwarded to it.
   var proxy = require(paths.appPackageJson).proxy;
   devServer.use(historyApiFallback({
-    // Allow paths with dots in them to be loaded, reference issue #387
+    // Paths with dots should still use the history fallback.
+    // See https://github.com/facebookincubator/create-react-app/issues/387.
     disableDotRule: true,
     // For single page apps, we generally want to fallback to /index.html.
     // However we also want to respect `proxy` for API calls.
     // So if `proxy` is specified, we need to decide which fallback to use.
     // We use a heuristic: if request `accept`s text/html, we pick /index.html.
     // Modern browsers include text/html into `accept` header when navigating.
-    // However API calls like `fetch()` won’t generally won’t accept text/html.
+    // However API calls like `fetch()` won’t generally accept text/html.
     // If this heuristic doesn’t work well for you, don’t use `proxy`.
     htmlAcceptHeaders: proxy ?
       ['text/html'] :
@@ -239,12 +252,15 @@ function addMiddleware(devServer) {
 
 function runDevServer(port, protocol) {
   var devServer = new WebpackDevServer(compiler, {
+    // Silence WebpackDevServer's own logs since they're generally not useful.
+    // It will still show compile warnings and errors with this setting.
+    clientLogLevel: 'none',
     // By default WebpackDevServer also serves files from the current directory.
     // This might be useful in legacy apps. However we already encourage people
     // to use Webpack for importing assets in the code, so we don't need to
     // additionally serve files by their filenames. Otherwise, even if it
     // works in development, those files will be missing in production, unless
-    // we explicitly copy them. But even if we copy the all the files into
+    // we explicitly copy them. But even if we copy all the files into
     // the build output (which doesn't seem to be wise because it may contain
     // private information such as files with API keys, for example), we would
     // still have a problem. Since the filenames would be the same every time,
@@ -295,6 +311,7 @@ function runDevServer(port, protocol) {
 
 function run(port) {
   var protocol = process.env.HTTPS === 'true' ? "https" : "http";
+  checkRequiredFiles();
   setupCompiler(port, protocol);
   runDevServer(port, protocol);
 }

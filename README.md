@@ -1,20 +1,13 @@
-# Create Feeble App
-
-Create Feeble apps with no build configuration.
-
-* [Getting Started](#getting-started) – How to create a new app.
-* [User Guide](https://github.com/facebookincubator/create-react-app/blob/master/template/README.md) – How to develop apps bootstrapped with Create React App.
+# feeble-scripts
 
 ## tl;dr
 
 ```sh
-npm install -g create-feeble-app
+npm install -g create-create-app
 
-create-feeble-app my-app
+create-create-app --scripts-version feeble-scripts my-app
 cd my-app/
 npm start
-
 ```
 
-Then open [http://localhost:3000/](http://localhost:3000/) to see your app.<br>
-When you’re ready to deploy to production, create a minified bundle with `npm run build`.
+For more details, please see `create-create-app`'s [README](https://github.com/facebookincubator/create-react-app#create-react-app-).
